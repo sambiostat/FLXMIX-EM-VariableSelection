@@ -60,7 +60,7 @@ simData <- function(n, nparam=list(),family=list(),mprop,covariate=c(TRUE,FALSE)
   for (k in 1:2){
     p1 = nparam[1]
     x1 = simX(n,p1)
-    betaa1 = simBeta(p1)
+    beta1 = simBeta(p1)
     y1 = simY(x1,beta1,family=family[1])
     p2 = nparam[2]
     beta2 = simBeta(p2)
