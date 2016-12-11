@@ -20,7 +20,7 @@ simY <- function(x,beta,family=c("gaussian","binomial")){
   family <- match.arg(family)
   unlinkedY <- x %*% t(beta)
   if (family == "guassian") {
-    y <- unlinkedY + rnorm(n,0,runif(1,1,2))
+    y <- unlinkedY + rnorm(nrow(x),0,runif(1,1,2))
   }
   if (family =="binomial") {
     prob <- 1/(1+exp(-unlinkedY))
