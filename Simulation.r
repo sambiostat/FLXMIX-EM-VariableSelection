@@ -74,7 +74,7 @@ simData <- function(n, nparam=list(),family=list(),mprop,covariate=c(TRUE,FALSE)
       temp = cbind(y1,y2,x1,x2)
     }
     if (k==1){final = temp[sample(1:n,n*prop[1]),]
-      }else{final <- rbind(final,temp)}
+      }else{final <- rbind(final,temp[sample(1:n,n*prop[2]),])}
   }
   colnames(final)=colname
   final
