@@ -1,3 +1,6 @@
+library("flexmix")
+library("ncvreg")
+
 FLXMRncvreg <- function(formula=.~.,     family = c("gaussian", "binomial", "poisson"), 
                        penalty = c("MCP", "SCAD", "lasso"), select = TRUE, adaptive = FALSE, 
                        offset = NULL, ...) {   
