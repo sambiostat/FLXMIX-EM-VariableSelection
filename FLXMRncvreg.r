@@ -42,7 +42,7 @@ FLXMRncvreg <- function(formula=.~.,     family = c("gaussian", "binomial", "poi
           select <- which(!select)        
           penalty[select] <- 0
           }           
-          m <-  glmnet::cv.glmnet(x[, -1, drop = FALSE], y, family = family, weights = w, penalty.factor = penalty, ...)
+          m <-  glmnet::cv.glmnet(x[, -1, drop = FALSE], y[,1,drop=TRUE], family = family, weights = w, penalty.factor = penalty, ...)
           coef <- as.vector(coef(m, s = "lambda.min"))
         } else {
               penalty <- rep(1, ncol(x) - 1)
@@ -52,7 +52,7 @@ FLXMRncvreg <- function(formula=.~.,     family = c("gaussian", "binomial", "poi
               penalty[select] <- 0
                 }  
               if (family == "binomial"){
-                m <- ncvreg::cv.ncvreg(x[, -1, drop = FALSE], y[1, drop=FALSE], family = family, penalty=penalty_choice, penalty.factor = penalty, ...)  
+                m <- ncvreg::cv.ncvreg(x[, -1, drop = FALSE], y[,1], family = family, penalty=penalty_choice, penalty.factor = penalty, ...)  
               } else {
                 m<- ncvreg::cv.ncvreg(x[, -1, drop = FALSE], y, family = family,penalty=penalty_choice, penalty.factor = penalty, ...)
               }
