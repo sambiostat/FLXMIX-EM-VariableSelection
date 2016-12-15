@@ -22,30 +22,30 @@ FLXMRncvreg <- function(formula=.~.,     family = c("gaussian", "binomial", "poi
     x
   }
   
-  z@fit <- function(x, y, w) {
+  z@fit <- function(x, y) {
     #firts of all, when covariate is not included in the selection process
     if (all(!select)) {    
       coef <- if (family == "gaussian")
-        lm.wfit(x, y, w = w)$coef
+        lm.wfit(x, y)$coef
       else if (family == "binomial")
-        glm.fit(x, y, family = binomial(), weights = w)$coef
+        glm.fit(x, y, family = binomial())$coef
       else if (family == "poisson")
-        glm.fit(x, y, family=poisson(), weights = w)$coef
+        glm.fit(x, y, family=poisson())$coef
       } 
     #if some of the covariate is specifed to be inside the selection process
     #And when variable selection method is Adaptive Lasso
     else {
       if (adaptive) {
-          if (family == "gaussian") { coef <- lm.wfit(x, y, w = w)$coef }
-          else if (family == "binomial"){ coef <- glm.fit(x, y, family = binomial(), weights = w)$coef}
-          else if (family == "poisson"){ coef <- glm.fit(x, y, family=poisson(), weights = w)$coef}
-          penalty <- mean(w) / abs(coef)
+          if (family == "gaussian") { coef <- lm.wfit(x, y)$coef }
+          else if (family == "binomial"){ coef <- glm.fit(x, y, family = binomial())$coef}
+          else if (family == "poisson"){ coef <- glm.fit(x, y, family=poisson())$coef}
+          penalty <- 1 / abs(coef)
           # set the penalty.factor as 0 if this covariate is not selected
           if (any(!select)){
           select <- which(!select)        
           penalty[select] <- 0
           }           
-          m <-  glmnet::cv.glmnet(x[, -1, drop = FALSE], y[,1,drop=TRUE], family = family, weights = w, penalty.factor = penalty, ...)
+          m <-  glmnet::cv.glmnet(x[, -1, drop = FALSE], y[,1,drop=TRUE], family = family, penalty.factor = penalty, ...)
           coef <- as.vector(coef(m, s = "lambda.min"))
         } else {
               penalty <- rep(1, ncol(x) - 1)
@@ -63,7 +63,7 @@ FLXMRncvreg <- function(formula=.~.,     family = c("gaussian", "binomial", "poi
             }
     }
     df <- sum(coef != 0)
-    sigma <- if (family == "gaussian") sqrt(sum(w * (y - x %*% coef)^2/mean(w))/(nrow(x) - df)) else NULL
+    sigma <- if (family == "gaussian") sqrt(sum((y - x %*% coef)^2)/(nrow(x) - df)) else NULL
     with(list(coef = coef, sigma = sigma, df = df + ifelse(family == "gaussian", 1, 0)),
          eval(z@defineComponent))
   }
